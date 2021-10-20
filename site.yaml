@@ -1,0 +1,10 @@
+---
+- hosts: all
+  roles:
+    - role: common
+    - role: docker
+    - role: podman
+    - role: neovim
+  #tasks:
+  #  - import_role: {name: common}
+  #  - import_role: {name: docker}

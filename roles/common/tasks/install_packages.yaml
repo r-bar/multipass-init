@@ -1,0 +1,17 @@
+---
+- name: install base packages
+  apt:
+    state: present
+    update_cache: true
+    name:
+      - ansible
+      - ripgrep
+      - zsh
+      - tmux
+      - git
+      - python3-pip
+      - python3-venv
+      - python-is-python3
+      - fzf
+      - curl
+      - apt-transport-https

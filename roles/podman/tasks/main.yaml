@@ -1,0 +1,13 @@
+- name: add podman repository key
+  apt_key:
+    url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ansible_lsb.release}}/Release.key"
+
+- name: add podman repository
+  apt_repository:
+    filename: podman
+    repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_{{ansible_lsb.release}}/ /"
+
+- name: install podman
+  apt:
+    name: podman
+    state: present

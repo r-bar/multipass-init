@@ -1,0 +1,10 @@
+runcmd:
+  - |
+    apt update
+    apt install ansible git
+
+    cd /usr/local/share
+    git clone https://github.com/r-bar/multipass-init.git
+    cd multipass-init
+
+    ansible-playbook -i inventory.yaml site.yaml

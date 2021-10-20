@@ -1,0 +1,13 @@
+---
+- name: add neovim PPA
+  apt_repository:
+    repo: 'ppa:neovim-ppa/unstable'
+
+- name: install neovim and supporting packages
+  apt:
+    state: present
+    name: [neovim, python3-pip, python3-dev]
+
+- name: install neovim python modules
+  pip:
+    name: pynvim
