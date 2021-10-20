@@ -5,7 +5,6 @@
     update_cache: true
     name:
       - ansible
-      - ripgrep
       - zsh
       - tmux
       - git
@@ -15,3 +14,14 @@
       - fzf
       - curl
       - apt-transport-https
+
+- name: install rust packages
+  apt:
+    state: present
+    # FIXME: this is a bug in the debian rust build tools. Fixed in ubuntu 20.10
+    # https://askubuntu.com/questions/1290262/unable-to-install-bat-error-trying-to-overwrite-usr-crates2-json-which
+    dpkg_options: "force-confdef,force-confold,force-overwrite"
+    name:
+      - ripgrep
+      - bat
+      - fd-find

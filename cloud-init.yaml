@@ -1,9 +1,11 @@
 package_upgrade: true
+# add packages required for running ansible-playbook
+packages:
+  - ansible
+  - git
+
 runcmd:
   - |
-    apt update
-    apt install ansible git
-
     cd /usr/local/share
     git clone https://github.com/r-bar/multipass-init.git
     cd multipass-init

@@ -1,2 +1,4 @@
 ---
 - import_tasks: install_packages.yaml
+- import_tasks: install_dotfiles.yaml
+- import_tasks: install_asdf.yaml

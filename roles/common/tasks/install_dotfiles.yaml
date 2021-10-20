@@ -1,0 +1,26 @@
+- name: install dotfile manager (yadm)
+  get_url:
+    url: https://raw.githubusercontent.com/TheLocehiliosan/yadm/master/yadm
+    dest: /usr/local/bin/yadm
+    mode: '755'
+
+- name: install transcrypt
+  get_url:
+    url: https://raw.githubusercontent.com/elasticdog/transcrypt/main/transcrypt
+    dest: /usr/local/bin/transcrypt
+    mode: '755'
+
+- name: clone dotfiles
+  become: ubuntu
+  shell:
+    creates: /home/ubuntu/.local/share/yadm/repo.git
+    cmd: |
+      yadm clone https://github.com/r-bar/dotfiles.git
+      yadm reset --hard origin/master
+
+
+- name: decrypt dotfiles
+  shell: "yadm transcrypt -y -p '{{dotfiles_password}}'"
+  become: ubuntu
+  #shell: "echo {{dotfiles_password}}"
+  when: 'dotfiles_password != ""'

@@ -1,0 +1,20 @@
+---
+- name: clone asdf
+  vars:
+    asdf_version: v0.8.1
+  git:
+    repo: 'https://github.com/asdf-vm/asdf.git'
+    dest: /usr/local/share/asdf
+    version: '{{asdf_version}}'
+
+- name: install asdf
+  lineinfile:
+    line: '. /usr/local/share/asdf/asdf.sh'
+    create: yes
+    path: /etc/bash.bashrc
+
+- name: install asdf completions
+  lineinfile:
+    line: '. /usr/local/share/asdf/completions/asdf.bash'
+    create: yes
+    path: /etc/bash.bashrc
