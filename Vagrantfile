@@ -63,11 +63,14 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "file", source: "./", destination: "/bootstrap"
+  provision_source = File.dirname(__FILE__) + "/provision"
+  config.vm.provision "file", source: provision_source, destination: "provision"
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y ansible git
-    cd /bootstrap
+    apt-get install -y ansible git python3 python3-pip
+    cd provision
+    . setup.sh
+    PATH="$HOME/.local/bin:$PATH"
     ansible-playbook -i inventory.yaml -b site.yaml
   SHELL
 end

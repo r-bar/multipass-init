@@ -1,5 +1,6 @@
 ---
 - name: install docker pre-reqs
+  become: true
   apt:
     name:
       - apt-transport-https
@@ -9,21 +10,24 @@
       - lsb-release
 
 - name: add docker repo key
+  become: true
   shell:
     creates: /usr/share/keyrings/docker-archive-keyring.gpg
     cmd: >-
-      curl -fsSL https://download.docker.com/linux/ubuntu/gpg
+      curl -fsSL https://download.docker.com/linux/debian/gpg
       | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
 - name: create apt repo file
+  become: true
   apt_repository:
     filename: docker
     repo: >-
       deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg]
-      https://download.docker.com/linux/ubuntu
+      https://download.docker.com/linux/debian
       {{ansible_lsb.codename}} stable
 
 - name: install docker
+  become: true
   apt:
     state: present
     name: [docker-ce, docker-ce-cli, containerd.io]

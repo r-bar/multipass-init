@@ -1,10 +1,10 @@
 ---
 - name: install base packages
+  become: true
   apt:
     state: present
     update_cache: true
     name:
-      - ansible
       - zsh
       - tmux
       - git
@@ -16,6 +16,7 @@
       - apt-transport-https
 
 - name: install rust packages
+  become: true
   apt:
     state: present
     # FIXME: this is a bug in the debian rust build tools. Fixed in ubuntu 20.10
