@@ -1,0 +1,23 @@
+---
+- name: install dotfile manager
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    name: [yadm, transcrypt]
+
+- name: clone dotfiles
+  shell:
+    creates: /home/ubuntu/.local/share/yadm/repo.git
+    cmd: |
+      yadm clone https://github.com/r-bar/dotfiles.git
+      yadm reset --hard origin/master
+
+
+- name: decrypt dotfiles
+  shell: "yadm transcrypt -y -p '{{dotfiles_password}}'"
+  when: 'dotfiles_password != ""'
+
+- name: set default user shell
+  user:
+    name: "{{ansible_user_id}}"
+    shell: /usr/bin/zsh

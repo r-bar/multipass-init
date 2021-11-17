@@ -1,0 +1,23 @@
+---
+- name: install podman and buildah packages
+  kewlfft.aur.aur:
+    name:
+      - podman
+      - buildah
+
+- name: enable unprivileged_userns_clone in kernel options
+  sysctl:
+    name: kernel.unprivileged_userns_clone
+    value: 1
+
+- name: set subuid for default user
+  lineinfile:
+    line: "{{ansible_user_id}}:100000:65535"
+    path: /etc/subuid
+    create: yes
+
+- name: set subgid for default user
+  lineinfile:
+    line: "{{ansible_user_id}}:100000:65535"
+    path: /etc/subgid
+    create: yes

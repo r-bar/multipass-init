@@ -1,0 +1,48 @@
+---
+- name: install base-devel
+  community.general.pacman:
+    name:
+      - base-devel
+
+- name: Create the `aur_builder` user
+  ansible.builtin.user:
+    name: aur_builder
+    create_home: yes
+    group: wheel
+- name: Allow the `aur_builder` user to run `sudo pacman` without a password
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/11-install-aur_builder
+    line: 'aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+    create: yes
+
+- name: install yay aur helper
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    use: makepkg
+    name: yay-bin
+
+- name: install base packages
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    use: yay
+    name:
+      - base-devel
+      - python-pynvim
+      - neovim
+      - htop
+      - tmux
+      - zsh
+      - fd
+      - ripgrep
+      - bat
+      - rustup
+      - git
+      - python-lsp-server
+      - asdf-vm
+
+- name: add rust toolchain 
+  shell:
+    creates: ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc
+    cmd: rustup toolchain add stable

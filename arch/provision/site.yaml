@@ -1,0 +1,6 @@
+---
+- hosts: all
+  roles:
+    - role: personalize
+    - role: docker
+    - role: podman

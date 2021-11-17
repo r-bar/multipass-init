@@ -1,0 +1,21 @@
+---
+- name: install docker packages
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    use: yay
+    name:
+      - docker
+      - docker-compose
+
+- name: add default user to docker group
+  user:
+    name: "{{ansible_user_id}}"
+    append: yes
+    groups: [docker]
+
+- name: enable docker service
+  systemd:
+    name: docker.service
+    state: started
+    enabled: yes
