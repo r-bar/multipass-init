@@ -42,7 +42,18 @@
       - python-lsp-server
       - asdf-vm
 
+- name: check if reboot is required due to kernel update
+  shell: 'test "$(uname -r)" = "$(file /boot/vmlinuz-linux | cut -d\  -f9)"'
+  register: kernel_check
+  ignore_errors: yes
+  changed_when: kernel_check.rc != 0
+
+- reboot:
+  when: kernel_check.rc != 0
+
 - name: add rust toolchain 
+  become: true
+  become_user: vagrant
   shell:
     creates: ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc
     cmd: rustup toolchain add stable

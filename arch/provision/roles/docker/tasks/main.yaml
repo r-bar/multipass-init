@@ -10,9 +10,17 @@
 
 - name: add default user to docker group
   user:
-    name: "{{ansible_user_id}}"
+    name: vagrant
     append: yes
     groups: [docker]
+
+- name: 
+  vars:
+    values:
+      iptables: false
+  copy:
+    dest: /etc/docker/daemon.json
+    content: "{{ values | tojson }}"
 
 - name: enable docker service
   systemd:

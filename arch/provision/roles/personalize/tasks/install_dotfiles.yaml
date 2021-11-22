@@ -6,18 +6,23 @@
     name: [yadm, transcrypt]
 
 - name: clone dotfiles
+  become: yes
+  become_user: vagrant
   shell:
-    creates: /home/ubuntu/.local/share/yadm/repo.git
+    creates: /home/vagrant/.local/share/yadm/repo.git
     cmd: |
       yadm clone https://github.com/r-bar/dotfiles.git
       yadm reset --hard origin/master
 
 
 - name: decrypt dotfiles
+  become: yes
+  become_user: vagrant
   shell: "yadm transcrypt -y -p '{{dotfiles_password}}'"
   when: 'dotfiles_password != ""'
 
 - name: set default user shell
   user:
-    name: "{{ansible_user_id}}"
+    # name: "{{ansible_user_id}}"
+    name: vagrant
     shell: /usr/bin/zsh
