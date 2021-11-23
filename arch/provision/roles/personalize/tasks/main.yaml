@@ -1,3 +1,49 @@
 ---
-- import_tasks: packages.yaml
+- name: find primary user
+  shell: "awk -v FS=':' '($3 == 1000){print $1}' /etc/passwd"
+  register: primary_user_discovery
+  when: primary_user == ""
+
+- name: set primary_user
+  set_fact:
+    primary_user: '{{primary_user_discovery.stdout | trim}}'
+  when: primary_user == ""
+
+- name: install base packages
+  become: yes
+  become_user: aur_builder
+  kewlfft.aur.aur:
+    use: yay
+    name:
+      - asdf-vm
+      - base-devel
+      - bat
+      - fd
+      - fzf
+      - git
+      - htop
+      - neovim
+      - python-lsp-server
+      - python-pynvim
+      - ripgrep
+      - rustup
+      - tmux
+      - zsh
+
+- name: add default user to groups and set shela
+  user:
+    name: '{{primary_user}}'
+    append: yes
+    groups:
+      - docker
+      - wheel
+    shell: /usr/bin/zsh
+
+- name: add rust toolchain 
+  become: true
+  become_user: '{{primary_user}}'
+  shell:
+    creates: ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc
+    cmd: rustup toolchain add stable
+
 - import_tasks: install_dotfiles.yaml

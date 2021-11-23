@@ -8,13 +8,15 @@
       - docker
       - docker-compose
 
-- name: add default user to docker group
-  user:
-    name: vagrant
-    append: yes
-    groups: [docker]
+- name: create docker configuration directory
+  file:
+    path: /etc/docker
+    state: directory
+    recurse: true
+    owner: root
+    group: root
 
-- name: 
+- name: set docker daemon config
   vars:
     values:
       iptables: false
@@ -23,6 +25,8 @@
     content: "{{ values | tojson }}"
 
 - name: enable docker service
+  # can fail when the host has not been restarted since last kernel update
+  ignore_errors: true
   systemd:
     name: docker.service
     state: started

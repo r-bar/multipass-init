@@ -12,12 +12,12 @@
 
 - name: set subuid for default user
   lineinfile:
-    line: "{{ansible_user_id}}:100000:65535"
+    line: "{{primary_user}}:100000:65535"
     path: /etc/subuid
     create: yes
 
 - name: set subgid for default user
   lineinfile:
-    line: "{{ansible_user_id}}:100000:65535"
+    line: "{{primary_user}}:100000:65535"
     path: /etc/subgid
     create: yes

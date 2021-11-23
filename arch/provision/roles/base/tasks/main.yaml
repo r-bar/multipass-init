@@ -1,4 +1,6 @@
 ---
+# tasks that must be executed before all other tasks
+
 - name: install base-devel
   community.general.pacman:
     name:
@@ -9,6 +11,7 @@
     name: aur_builder
     create_home: yes
     group: wheel
+
 - name: Allow the `aur_builder` user to run `sudo pacman` without a password
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/11-install-aur_builder
@@ -22,38 +25,11 @@
     use: makepkg
     name: yay-bin
 
-- name: install base packages
-  become: yes
-  become_user: aur_builder
-  kewlfft.aur.aur:
-    use: yay
-    name:
-      - base-devel
-      - python-pynvim
-      - neovim
-      - htop
-      - tmux
-      - zsh
-      - fd
-      - ripgrep
-      - bat
-      - rustup
-      - git
-      - python-lsp-server
-      - asdf-vm
-
 - name: check if reboot is required due to kernel update
   shell: 'test "$(uname -r)" = "$(file /boot/vmlinuz-linux | cut -d\  -f9)"'
   register: kernel_check
-  ignore_errors: yes
-  changed_when: kernel_check.rc != 0
+  failed_when: kernel_check.rc == 127
+  changed_when: "False"
 
 - reboot:
-  when: kernel_check.rc != 0
-
-- name: add rust toolchain 
-  become: true
-  become_user: vagrant
-  shell:
-    creates: ~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc
-    cmd: rustup toolchain add stable
+  when: "ansible_connection != 'local' and kernel_check.rc != 0"
