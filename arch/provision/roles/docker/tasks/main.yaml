@@ -24,10 +24,23 @@
     dest: /etc/docker/daemon.json
     content: "{{ values | tojson }}"
 
+# https://stackoverflow.com/questions/20430371/my-docker-container-has-no-internet
+- name: enable ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+
+# https://wiki.archlinux.org/title/docker#docker0_Bridge_gets_no_IP_/_no_internet_access_in_containers_when_using_systemd-networkd
+- name: ensure eth0 port forwards
+  lineinfile:
+    path: /etc/systemd/network/eth0.network
+    line: IPForward=yes
+    insertafter: '\[Network\]'
+
 - name: enable docker service
   # can fail when the host has not been restarted since last kernel update
   ignore_errors: true
   systemd:
     name: docker.service
-    state: started
+    state: restarted
     enabled: yes

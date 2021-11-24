@@ -29,6 +29,9 @@
       - rustup
       - tmux
       - zsh
+      - amazon-ecr-credential-helper
+      - aws-cli-v2-bin
+      - dnsutils
 
 - name: add default user to groups and set shela
   user:
